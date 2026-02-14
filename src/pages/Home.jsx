@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import {Loader2} from 'lucide-react'
+
 import { UserContainer } from '../context/UserContextProvider.jsx';
 
 import images from '../assets/asserts.js'
@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar.jsx'
 import ErrorView from '../components/ErrorView.jsx';
 import LandingView from '../components/LandingView.jsx';
 import ProfileView from '../components/ProfileView.jsx';
+import Loader from '../components/Loader.jsx';
 function Home() {
      
     const {searchTerm, setSearchTerm, handleInput, errorHandle, status, profile, errMsg ,isLoading} = useContext(UserContainer)    
@@ -34,9 +35,7 @@ function Home() {
                 {!profile && <p className=' text-red-900 text-center mt-2'>{errMsg}</p>}
                 {status === "idle" && <LandingView />}
                 {isLoading && (
-                    <div className="flex justify-center items-center pt-40 ">
-                        <Loader2 className='h-6 w-6 animate-spin text-blue-400'/>
-                    </div>
+                    <Loader/>
                 )}
                 {status === "error" && (
                     <ErrorView

@@ -1,12 +1,12 @@
-import React from 'react'
 import { Link } from 'react-router'
-
 
 function Navbar() {
   return (
-    <div>
+    <div className="w-full max-w-285 mx-auto ">
         <div className='flex justify-between p-8'>
-                <h1 className='text-lg font-semibold '>Github Profile Visualizer</h1>
+                <Link to='/'>
+                  <h1 className='text-lg font-semibold '>Github Profile Visualizer</h1>
+                </Link>
                 <div>
                     <ul className='flex space-x-6 text-slate-300 '>
                         <li className=' hover:text-[#3B82F6] transition-colors duration-200'><Link to='/'>Home</Link></li>

@@ -1,6 +1,6 @@
 import images from '../assets/asserts'
 
-function NoRepositories() {
+function EmptyRepo() {
   return (
     <div className="text-center mt-12">  
       <div className="flex justify-center mt-12">
@@ -11,10 +11,10 @@ function NoRepositories() {
         />
       </div>
       <h1 className="text-3xl font-semibold pt-10">
-        No Repositories Found!
+        This repository is empty!
       </h1>
     </div>
   )
 }
 
-export default NoRepositories
+export default EmptyRepo

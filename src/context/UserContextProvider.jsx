@@ -1,18 +1,18 @@
 import { createContext, useState } from 'react'
-
+import { useNavigate } from "react-router";
 export const UserContainer = createContext();
 
-export function UserContextProvider({children}) {
+export function UserContextProvider({ children }) {
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [profile, setProfile] = useState(null);
-  const [repos, setRepos] = useState([]);
-  const [errMsg, setErrMsg] = useState("");
-  const [status, setStatus] = useState("idle");
-  const [isLoading, setIsLoading] = useState(false)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [profile, setProfile] = useState(null);
+    const [repos, setRepos] = useState([]);
+    const [errMsg, setErrMsg] = useState("");
+    const [status, setStatus] = useState("idle");
+    const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate();
 
-   
-  const handleInput = async (e) => {
+    const handleInput = async (e) => {
         e.preventDefault();
         if (!searchTerm.trim()) {
             setErrMsg("Enter a Gitub Username");
@@ -27,8 +27,8 @@ export function UserContextProvider({children}) {
             setErrMsg("");
             const response = await fetch(`https://api.github.com/users/${searchTerm}`, {
                 headers: {
-                Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
-            }
+                    Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
+                }
             })
             if (!response.ok) {
                 if (response.status === 404) {
@@ -47,7 +47,7 @@ export function UserContextProvider({children}) {
                 const data = await response.json();
                 setProfile(data);
                 setStatus("success");
-            }            
+            }
         } catch (error) {
             setStatus("error");
             setErrMsg("Enter Valid Username");
@@ -58,38 +58,58 @@ export function UserContextProvider({children}) {
 
     }
 
-  const errorHandle = () => {
+    const errorHandle = () => {
         setStatus("idle");
         setSearchTerm("");
         setErrMsg("");
     }
 
-  const handleRepo = async () => {
-    const response = await fetch(`https://api.github.com/users/${searchTerm}/repos`, {
-                headers: {
-                "Authorization": `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`
-            }
-            });
-    const data = await response.json();
-    setRepos(data)
-  }
+    const handleHome = () => {
+        navigate('/')
+    }
 
-  const values = {
-    searchTerm, 
-    setSearchTerm, 
-    handleInput, 
-    errorHandle, 
-    status, 
-    profile, 
-    errMsg,
-    repos, 
-    handleRepo, 
-    isLoading
-  }
+    const handleRepo = async () => {
+        if (!searchTerm) return;
+        try {
+            setIsLoading(true);
+            setRepos([]);
+            const response = await fetch(
+                `https://api.github.com/users/${searchTerm}/repos`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`
+                    }
+                }
+            );
 
-  return (
-      <UserContainer.Provider value={values}>
-        {children}
-      </UserContainer.Provider>
-  )
+            const data = await response.json();
+            setRepos(data);
+
+        } catch (err) {
+            setErrMsg("Something went wrong")
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const values = {
+        searchTerm,
+        setSearchTerm,
+        handleInput,
+        errorHandle,
+        status,
+        profile,
+        errMsg,
+        repos,
+        handleRepo,
+        isLoading,
+        setIsLoading,
+        handleHome
+    }
+
+    return (
+        <UserContainer.Provider value={values}>
+            {children}
+        </UserContainer.Provider>
+    )
 }

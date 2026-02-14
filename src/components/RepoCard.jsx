@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 const RepoCard = ({ repo }) => {
-  const { name, description, languages_url } = repo;
+  const { name, description, languages_url, owner } = repo;
 
   const tagColors = [
     { text: "#E879F9", bg: "#C026D329" },
@@ -18,7 +19,7 @@ const RepoCard = ({ repo }) => {
       try {
         const res = await fetch(languages_url,{
           headers: {
-                Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
+                "Authorization": `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`
             }
         });
         const data = await res.json();
@@ -30,9 +31,10 @@ const RepoCard = ({ repo }) => {
 
     fetchLanguages();
   }, [languages_url]);
-
+  console.log(repo)
   return (
-    <div className="bg-[#1e293b] p-6 rounded-2xl shadow-md">
+    <Link to={`/repo/${owner.login}/${name}`}>
+    <div className="bg-[#1e293b] p-6 rounded-2xl shadow-md m-5">
       <h2 className="text-xl font-semibold text-blue-400 mb-2">
         {name}
       </h2>
@@ -44,7 +46,6 @@ const RepoCard = ({ repo }) => {
       <div className="flex flex-wrap gap-3">
         {languages.map((lang, index) => {
           const color = tagColors[index % tagColors.length];
-
           return (
             <span
               key={index}
@@ -60,6 +61,7 @@ const RepoCard = ({ repo }) => {
         })}
       </div>
     </div>
+    </Link>
   );
 };
 

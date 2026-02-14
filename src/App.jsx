@@ -3,12 +3,17 @@ import {Route, Routes} from 'react-router'
 import Home from './pages/Home'
 import Repositories from './pages/Repositories'
 import NotFound from './pages/NotFound'
+import RepoDetail from './components/RepoDetail'
+import Analysis from './pages/Analysis'
 
 function App() {
+  
   return (
     <Routes>
       <Route path='/' element={<Home />}/>
       <Route path='/repositories' element={<Repositories />} />
+      <Route path="/repo/:user/:repoName" element={<RepoDetail />} />
+      <Route path='/analysis' element={<Analysis />} />
       <Route path='*' element={<NotFound />} />
     </Routes>
   )

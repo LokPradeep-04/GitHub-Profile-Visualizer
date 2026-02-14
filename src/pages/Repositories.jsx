@@ -1,30 +1,30 @@
-import { Loader2 } from 'lucide-react'
 import { useContext, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 
 import RepoCard from '../components/RepoCard'
 import { UserContainer } from '../context/UserContextProvider'
 import NoRepositories from '../components/NoRepositories';
+import Loader from '../components/Loader'
+import NoRepoData from '../components/NoRepoData';
 function Repositories() {
 
-  const { repos, handleRepo, searchTerm, isLoading } = useContext(UserContainer);
+  const { repos, handleRepo, searchTerm, isLoading, profile } = useContext(UserContainer);
 
   useEffect(() => {
     handleRepo()
   }, [searchTerm])
-
+  
+    if (!profile) return (
+        <NoRepoData />
+    )
 
   return (
     <>
       <div className="min-h-screen bg-[#0f172a] text-white pb-17">
         <Navbar />
-
-
         <div className="max-w-5xl mx-auto px-6">
           {isLoading ?
-            <div className="flex justify-center items-center pt-40 ">
-              <Loader2 className='h-6 w-6 animate-spin text-blue-400' />
-            </div>
+            <Loader/>
             : 
             repos.length === 0 
             ? 
