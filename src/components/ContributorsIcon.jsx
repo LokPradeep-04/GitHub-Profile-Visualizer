@@ -1,6 +1,4 @@
-import React from 'react'
-
-function ProfileIcon({person}) {
+function ContributorsIcon({person}) {
   return (
     
         <img src={person.avatar_url} alt="contributor_img" className='w-7 h-7 rounded-2xl'/>   
@@ -8,4 +6,4 @@ function ProfileIcon({person}) {
   )
 }
 
-export default ProfileIcon
+export default ContributorsIcon

@@ -27,14 +27,14 @@ function NotFound() {
             <p className="text-gray-400 mb-8 leading-relaxed">
               Please go back to the homepage
             </p>        
-            <but
+            <button
               onClick={handleHome}
               className="bg-blue-500 hover:bg-blue-600 active:scale-95
                          transition px-8 py-2.5 rounded-md font-medium
                          shadow-lg shadow-blue-500/20"
             >
               Go to Home
-            </but>
+            </button>
           </div>
         </div>
       )}

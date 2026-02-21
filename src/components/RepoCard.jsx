@@ -31,7 +31,7 @@ const RepoCard = ({ repo }) => {
 
     fetchLanguages();
   }, [languages_url]);
-  console.log(repo)
+
   return (
     <Link to={`/repo/${owner.login}/${name}`}>
     <div className="bg-[#1e293b] p-6 rounded-2xl shadow-md m-5">

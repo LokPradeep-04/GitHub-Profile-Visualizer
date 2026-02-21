@@ -1,21 +1,22 @@
 import { useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useParams, useNavigate } from 'react-router'
 import { UserContainer } from '../context/UserContextProvider'
 import Navbar from './Navbar';
-import ProfileIcon from './ProfileIcon';
+import ContributorsIcon from './ContributorsIcon';
 import Piechart from './DonutChart';
 import images from '../assets/asserts';
 import Loader from './Loader';
 import EmptyRepo from './EmptyRepo';
+import { ArrowLeft } from "lucide-react";
 
 function RepoDetail() {
   const { isLoading, setIsLoading } = useContext(UserContainer)
   const { user, repoName } = useParams();
-  console.log(user, repoName)
+  const navigate = useNavigate();
 
   const [repo, setRepo] = useState(null);
   const [contributors, setContributors] = useState([]);
-  const [commits, setCommits] = useState([]);
+  const [commitCount, setCommitCount] = useState(0);
   const [languages, setLanguages] = useState([]);
   const [pieLang, setPieLang] = useState([]);
 
@@ -26,10 +27,7 @@ function RepoDetail() {
     { text: "#F472B6", bg: "#DB277729" },
     { text: "#FBBF24", bg: "#F59E0B29" }
   ];
-  console.log(repo)
-  console.log(contributors)
-  console.log(commits)
-  console.log(languages)
+
 
   const fetchAllDetails = async () => {
     try {
@@ -48,12 +46,27 @@ function RepoDetail() {
       })
       const contributorsData = await contributorsRes.json();
 
-      const commitRes = await fetch(`https://api.github.com/repos/${user}/${repoName}/commits`, {
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`
+      // Get commit count using pagination header
+      const commitRes = await fetch(
+        `https://api.github.com/repos/${user}/${repoName}/commits?per_page=1`,
+        {
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`
+          }
         }
-      })
-      const commitData = await commitRes.json();
+      );
+
+      const linkHeader = commitRes.headers.get("link");
+
+      if (linkHeader) {
+        const match = linkHeader.match(/page=(\d+)>; rel="last"/);
+        if (match) {
+          setCommitCount(parseInt(match[1]));
+        }
+      } else {
+        // fallback if only 1 page
+        setCommitCount(1);
+      }
 
       const langRes = await fetch(`https://api.github.com/repos/${user}/${repoName}/languages`, {
         headers: {
@@ -63,9 +76,9 @@ function RepoDetail() {
       const langData = await langRes.json();
 
       setRepo(repoData);
-      console.log(repo)
+
       setContributors(contributorsData)
-      setCommits(commitData)
+
       setLanguages(Object.keys(langData));
       setPieLang(langData);
     } catch (error) {
@@ -81,7 +94,7 @@ function RepoDetail() {
 
   const visibleContributors = contributors.slice(0, 5);
   const remainingCount = contributors.length - 5;
-  
+
   if (isLoading) {
     return (
       <div className='min-h-screen bg-[#0f172a]'>
@@ -91,16 +104,18 @@ function RepoDetail() {
   }
 
   if (!repo) return (
-    <div className='min-h-screen bg-[#0f172a] text-white'>  
-      <Navbar />    
+    <div className='min-h-screen bg-[#0f172a] text-white'>
+      <Navbar />
       <EmptyRepo />
     </div>
   )
-  
+
   return (
     <div className='min-h-screen bg-[#0f172a] text-white pb-20'>
 
       <Navbar />
+      <button onClick={() => navigate('/repositories')} className="ml-45 mt-4 px-4 py-2 bg-[#111C33] rounded-lg border border-[#1f2a44] hover:bg-[#1e293b] transition"
+      ><ArrowLeft size={25}/></button>
       <div className="bg-[#1e293b] w-full max-w-285 mx-auto mt-10 p-10 rounded-xl shadow-lg">
         <h2 className="text-2xl font-semibold text-blue-400 mb-2">
           {repo.name}
@@ -108,7 +123,7 @@ function RepoDetail() {
         <p className="text-gray-400 text-md mb-6">
           {repo.description || "No description"}
         </p>
-        
+
         <div className="flex flex-wrap gap-3 mb-6">
           {languages.map((lang, index) => {
             const color = tagColors[index % tagColors.length];
@@ -133,12 +148,12 @@ function RepoDetail() {
         <div className='flex  p-2 mt-2'>
           <div className='h-17 w-40 border-[#CBD5E1] border p-2 text-center mr-2 rounded-sm'>
             <h3>Commits count</h3>
-            <p>34</p>
+            <p>{commitCount}</p>
 
           </div>
           <div className='h-17 w-40 border-[#CBD5E1] border p-2 text-center rounded-sm '>
-            <h3>Commits count</h3>
-            <p>34</p>
+            <h3>Issues Count</h3>
+            <p>{repo.open_issues_count}</p>
 
           </div>
         </div>
@@ -148,7 +163,7 @@ function RepoDetail() {
 
           {visibleContributors.map((person, index) => (
             <div key={person.id} className={`${index !== 0 ? "ml-3" : ""}`}>
-              <ProfileIcon person={person} />
+              <ContributorsIcon person={person} />
             </div>
           ))}
 

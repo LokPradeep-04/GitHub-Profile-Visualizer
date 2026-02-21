@@ -1,11 +1,11 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 const COLORS = [
-  "#4ADE80", // green
-  "#38BDF8", // blue
-  "#FBBF24", // yellow
-  "#FB7185", // pink
-  "#A78BFA"  // purple
+  "#4ADE80", 
+  "#38BDF8", 
+  "#FBBF24", 
+  "#FB7185", 
+  "#A78BFA"  
 ];
 
 function DonutChart({pieLang}) {
@@ -18,7 +18,7 @@ function DonutChart({pieLang}) {
   return (
     <div className="flex items-center gap-12 mt-6">
 
-      {/* Donut */}
+      
       <div className="w-80 h-80">
         <ResponsiveContainer>
           <PieChart>
@@ -40,7 +40,7 @@ function DonutChart({pieLang}) {
         </ResponsiveContainer>
       </div>
 
-      {/* Legend */}
+      
       <div className="flex flex-col gap-4">
         {data.map((entry, index) => (
           <div key={index} className="flex items-center gap-3">
