@@ -36,9 +36,8 @@ To run the GitHub Profile Visualizer:
 ## Technologies Used
 - JavaScript
 - React.js
-- Node.js
 - GitHub API
-- CSS
+- Tailwind CSS
 
 ## Contributing
 If you would like to contribute to this project, please create a pull request or open an issue for suggestions and improvements.
